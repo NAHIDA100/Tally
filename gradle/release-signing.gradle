@@ -1,0 +1,47 @@
+/**
+ * 发布签名配置。由 plugins/withTallyBuildConfig.js 在 app/build.gradle 末尾
+ * 追加一行 apply from 引入 —— 这样 expo prebuild 重写 app/build.gradle 时
+ * 只需要恢复那一行，不必再往模板里做字符串替换。
+ *
+ * 凭据在 keystore/keystore.properties（与 *.jks 一起被 gitignore）。
+ * 文件不存在时退回 debug keystore 并告警：别人 clone 下来没配凭据也能构建，
+ * 只是产物不能覆盖安装到正式发布版上。
+ */
+// rootDir 是 android/，仓库根要往上退一层；
+// 早先用 rootProject.file('keystore/...') 会错到 android/keystore 下面去。
+def repoRoot = rootDir.absoluteFile.parentFile
+def signingDir = new File(repoRoot, 'keystore')
+def propsFile = new File(signingDir, 'keystore.properties')
+
+if (!propsFile.exists()) {
+    logger.warn("tally: 未找到 ${propsFile}，release 使用 debug keystore 签名")
+    return
+}
+
+def props = new Properties()
+propsFile.withInputStream { props.load(it) }
+
+def required = ['storeFile', 'storePassword', 'keyAlias', 'keyPassword']
+def missing = required.findAll { !props.getProperty(it) }
+if (missing) {
+    logger.warn("tally: keystore.properties 缺少 ${missing}，release 使用 debug keystore 签名")
+    return
+}
+
+def storePath = new File(repoRoot, props.getProperty('storeFile'))
+if (!storePath.exists()) {
+    logger.warn("tally: keystore 文件不存在：${storePath}，release 使用 debug keystore 签名")
+    return
+}
+
+def android = project.extensions.getByName('android')
+
+android.signingConfigs.create('tallyRelease') {
+    storeFile storePath
+    storePassword props.getProperty('storePassword')
+    keyAlias props.getProperty('keyAlias')
+    keyPassword props.getProperty('keyPassword')
+}
+
+android.buildTypes.release.signingConfig = android.signingConfigs.tallyRelease
+logger.lifecycle("tally: release 使用 ${storePath.name} 签名")

@@ -1,0 +1,57 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+  <application>
+    <!--
+      四个尺寸的桌面卡片。AppWidgetProvider 必须 exported="true"：
+      系统以跨 UID 广播投递 APPWIDGET_UPDATE，非导出收不到（荣耀上表现为卡片放不下）。
+      这里声明在库模块的 manifest 里，由 AGP 合并进主 manifest，
+      所以不需要额外的 config plugin，也不会被 expo prebuild 抹掉。
+    -->
+    <receiver
+      android:name="com.tally.bookkeeping.widget.QuickAddWidgetProvider"
+      android:exported="true"
+      android:label="Tally 记一笔 2×2">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/widget_quick_add_info" />
+    </receiver>
+
+    <receiver
+      android:name="com.tally.bookkeeping.widget.MonthSummaryWidgetProvider"
+      android:exported="true"
+      android:label="Tally 月度概览 4×1">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/widget_month_summary_info" />
+    </receiver>
+
+    <receiver
+      android:name="com.tally.bookkeeping.widget.RecentWidgetProvider"
+      android:exported="true"
+      android:label="Tally 最近账单 4×2">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/widget_recent_info" />
+    </receiver>
+
+    <receiver
+      android:name="com.tally.bookkeeping.widget.AnalysisWidgetProvider"
+      android:exported="true"
+      android:label="Tally 支出分析 4×3">
+      <intent-filter>
+        <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+      </intent-filter>
+      <meta-data
+        android:name="android.appwidget.provider"
+        android:resource="@xml/widget_analysis_info" />
+    </receiver>
+  </application>
+</manifest>
