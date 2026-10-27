@@ -73,5 +73,20 @@ src/
 MIT 许可，见 [LICENSE](LICENSE)。所有功能免费，没有广告、会员和内购，也不会弹任何付费提醒。
 应用内「我的 → 赞助开发者」是纯自愿的入口。
 
+## 下载
+
+直接装 APK 的话看 [Releases](https://github.com/NAHIDA100/Tally/releases)，
+提供 arm64-v8a / armeabi-v7a 的正式版（约 75MB，含 x86 模拟器 ABI 的构建方式见下）。
+自己出包：
+
+```bash
+npx expo prebuild --platform android --no-install
+cd android && ./gradlew assembleRelease
+```
+
+`plugins/withTallyBuildConfig` 会自动把这台机器需要的原生补丁重放一遍，不需要手工改 `android/`。
+发布签名读 `keystore/keystore.properties`（不入库），缺该文件时自动退回 debug keystore，
+所以 clone 下来直接就能构建。
+
 更多实现层面的坑（NativeWind 对 `Pressable` 函数式 style 的影响、victory-native 42 的 API 陷阱、
 `budgets` 表为什么不能有外键、Reanimated 百分比宽度）记录在 [AGENTS.md](AGENTS.md)。
