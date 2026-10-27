@@ -76,7 +76,8 @@ MIT 许可，见 [LICENSE](LICENSE)。所有功能免费，没有广告、会员
 ## 下载
 
 直接装 APK 的话看 [Releases](https://github.com/NAHIDA100/Tally/releases)，
-提供 arm64-v8a / armeabi-v7a 的正式版（约 75MB，含 x86 模拟器 ABI 的构建方式见下）。
+提供 `arm64-v8a` + `armeabi-v7a` 两个 ABI 的正式签名包（约 75MB）。
+默认不出 x86 包：加上模拟器 ABI 会让体积翻倍到 153MB，其中 140MB 是 Skia 静态库。
 自己出包：
 
 ```bash
